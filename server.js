@@ -4,6 +4,7 @@ const express     = require('express');
 const bodyParser  = require('body-parser');
 const expect      = require('chai').expect;
 const cors        = require('cors');
+const mongoose = require('mongoose');
 require('dotenv').config();
 
 const apiRoutes         = require('./routes/api.js');
@@ -15,8 +16,6 @@ let app = express();
 app.use('/public', express.static(process.cwd() + '/public'));
 
 app.use(cors({origin: '*'})); //For FCC testing purposes only
-
-
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -35,6 +34,11 @@ app.route('/')
 
 //For FCC testing purposes
 fccTestingRoutes(app);
+
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => console.error('Could not connect to MongoDB', err));
+
 
 //Routing for API 
 apiRoutes(app);  
